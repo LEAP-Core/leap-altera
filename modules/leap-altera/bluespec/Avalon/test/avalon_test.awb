@@ -1,0 +1,17 @@
+********************************************************************
+* Avalon Test
+********************************************************************
+
+%AWB_START
+
+%name AvalonTest
+%desc Testbench for Avalon Master/Slave
+%provides hw_only_application
+
+%requires avalon
+
+
+%sources -t BSV -v PUBLIC AvalonMasterSlaveTester.bsv
+%sources -t BSV -v PUBLIC AvalonRegisterFile.bsv
+
+%AWB_END
