@@ -1,0 +1,14 @@
+1#/********************************************************************
+#* Python libraries for Quartus tool
+#********************************************************************/
+
+%name Altera Full Compilation Toolchain
+%desc Altera FullCompilation Toolchain
+%attributes tool
+
+%provides post_synthesis_tool
+
+%notes README
+
+%scons %library ALTERA_FULL_POST_SYNTH.py
+
