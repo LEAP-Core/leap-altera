@@ -158,3 +158,10 @@ MODEL_CLOCK_FREQ=50
 [FPGA Build Pipeline Altera]
 File=config/pm/leap/submodels/pipelines/build-pipeline-altera.apm
 Packagehint=leap
+
+[RRR Debug Module]
+File=modules/leap/virtual-platform/rrr/rrr-common/rrr-debug.awb
+Packagehint=leap
+
+[RRR Common Module/Requires]
+rrr_debug=RRR Debug Module
