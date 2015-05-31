@@ -11,4 +11,6 @@
 %notes README
 
 %scons %library ALTERA_FULL_POST_SYNTH.py
+%sources -t TCL_HEADER -v PRIVATE altera-timing.sdc
+
 
