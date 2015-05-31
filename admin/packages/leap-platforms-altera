@@ -1,0 +1,9 @@
+
+[Global]
+Buildorder=1000
+Version=1
+Lock=asim-leap-platforms-altera
+Description=Description of leap-platforms-altera
+Name=leap-platforms-altera
+Tag=HEAD
+CSN=CSN-leap-platforms-altera-0
