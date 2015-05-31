@@ -87,56 +87,6 @@ class PostSynthesize():
             ['cp $SOURCE $TARGET',
              'chmod 755 $TARGET'])
 
-
-
-        ##
-        ## Generate a summary of the build and write a target file describing
-        ## whether the build was successful.
-        ## TODO: This code is almost identical to the Vivado code. Refactoring
-        ##       is needed. 
-        ##
-        def leap_altera_summary(altera_apm_name):
-            def leap_altera_summary_closure(target, source, env):
-                par_file = open(altera_apm_name + '.sta.rpt','r')
-                errinfo_file = open(str(target[0]), 'w')
-
-                timing_score = None
-                clk_err = 0
-
-                for full_line in par_file:
-                    line = full_line.rstrip()
-                    # do a quartus specific search.   
-                    match = re.search(r'Timing Analyzer was successful', line)
-                    if (match):
-                        timing_score = 0 
-
-                    match = re.search(r'Timing requirements not met', line)
-                    if (match):
-                        timing_score = 1 
-                        break
-      
-                par_file.close()
-
-                if (timing_score is None):
-                    print 'Failed to find timing score!'
-                    clk_err = 1
-
-                if (clk_err or timing_score > 0):
-                    print '\n        ******** Design does NOT meet timing! ********\n'
-                    errinfo_file.write('Slack was violated.\n')
-                else:
-                    print '\nDesign meets timing.'
-
-                errinfo_file.close()
-
-                # Timing failures are reported as non-fatal errors.  The error is
-                # noted but the build continues.
-                if (clk_err or timing_score > 0):
-                    model.nonFatalFailures.append(str(target[0]))
-
-            return leap_altera_summary_closure
-
-                        
         altera_loader = moduleList.env.Command(
             moduleList.apmName + '_hw.errinfo',
             moduleList.swExe + moduleList.topModule.moduleDependency['BIT'] + altera_download,
@@ -144,7 +94,7 @@ class PostSynthesize():
              SCons.Script.Delete(moduleList.apmName + '_hw.exe'),
              SCons.Script.Delete(moduleList.apmName + '_hw.vexe'),
              '@echo "++++++++++++ Post-Place & Route ++++++++"',
-             leap_altera_summary(altera_apm_name)])
+             synthesis_library.leap_physical_summary(altera_apm_name + '.sta.rpt', moduleList.apmName + '_hw.errinfo', 'Timing Analyzer was successful', 'Timing requirements not met')])
 
         moduleList.topModule.moduleDependency['LOADER'] = [altera_loader]
         moduleList.topDependency = moduleList.topDependency + [altera_loader]
