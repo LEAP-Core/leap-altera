@@ -22,7 +22,7 @@ class PostSynthesize():
         timingReportScriptFile.write('report_exceptions  -file ' +  moduleList.apmName + '.twr\n')
         timingReportScriptFile.close()
 
-        newPrjFile = open(altera_apm_name + '.temp.qsf', 'w')
+        newPrjFile = open(altera_apm_name + '.qsf', 'w')
 
 
         # Add in all the verilog here. 
@@ -56,18 +56,16 @@ class PostSynthesize():
             newPrjFile.write('set_global_assignment -name SDC_FILE ' + model.rel_if_not_abspath(tcl_header, moduleList.compileDirectory)+ '\n')
 
         newPrjFile.write('set_global_assignment -name TOP_LEVEL_ENTITY ' + moduleList.topModule.wrapperName() + '\n')
+
+        for qsf in map(model.modify_path_hw,moduleList.getAllDependenciesWithPaths('GIVEN_QSFS')):
+            newPrjFile.write('source ' + model.rel_if_not_abspath(qsf, moduleList.compileDirectory)+ '\n')
+
         newPrjFile.close()
 
-        # Concatenate altera QSF files
-        altera_qsf = moduleList.env.Command(
-          altera_apm_name + '.qsf',
-          [altera_apm_name + '.temp.qsf'] + model.Utils.clean_split(moduleList.env['DEFS']['GIVEN_QSFS'], sep = ' '),
-          ['cat $SOURCES > $TARGET',
-           'rm ' + altera_apm_name + '.temp.qsf'])
 
         # generate sof
         altera_sof = moduleList.env.Command(altera_apm_name + '.sof',
-                                            globalVerilogs + globalVHDs + [altera_qsf] + [paramTclFile] + sdcs,
+                                            globalVerilogs + globalVHDs + [altera_apm_name + '.qsf'] + [paramTclFile] + sdcs,
                                             ['cd ' + moduleList.compileDirectory + '; quartus_map --verilog_macro="QUARTUS_COMPILATION=1" --lib_path=`pwd` ' + moduleList.apmName,
                                              'cd ' + moduleList.compileDirectory + '; quartus_fit ' + moduleList.apmName,
                                              'cd ' + moduleList.compileDirectory + '; quartus_sta ' + moduleList.apmName + ' --report_script=' + timingReportScript,
