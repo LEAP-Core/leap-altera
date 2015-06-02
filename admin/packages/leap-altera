@@ -1,9 +1,0 @@
-
-[Global]
-Buildorder=1000
-Version=1
-Lock=asim-leap-altera
-Description=Description of leap-altera
-Name=leap-altera
-Tag=HEAD
-CSN=CSN-leap-altera-0
