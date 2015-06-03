@@ -10,20 +10,20 @@ class PostSynthesize():
     def __init__(self, moduleList):
         altera_apm_name = moduleList.compileDirectory + '/' + moduleList.apmName
 
-        #synthDeps = moduleList.topModule.moduleDependency['SYNTHESIS']
-
         # pick up awb parameters.
         paramTclFile = moduleList.topModule.moduleDependency['PARAM_TCL'][0]
 
-        timingReportScript =  moduleList.apmName + '.sta.sdc'
+        # If the compilation directory doesn't exist, create it. 
+        if(not os.path.exists(moduleList.compileDirectory)):
+            os.mkdir(moduleList.compileDirectory)
 
-        timingReportScriptFile = open(moduleList.compileDirectory + '/'  + timingReportScript, 'w')
-        timingReportScriptFile.write('report_timing -file ' + moduleList.apmName + '.twr\n')
-        timingReportScriptFile.write('report_exceptions  -file ' +  moduleList.apmName + '.twr\n')
-        timingReportScriptFile.close()
+        newPrjFile = open(altera_apm_name + '.tcl', 'w')
 
-        newPrjFile = open(altera_apm_name + '.qsf', 'w')
+        newPrjFile.write('package require ::quartus::project\n')
+        newPrjFile.write('package require ::quartus::flow\n')
 
+        # do we want to check for the existence of a project here?
+        newPrjFile.write('project_new ' + moduleList.apmName +' -overwrite\n')
 
         # Add in all the verilog here. 
         [globalVerilogs, globalVHDs] = synthesis_library.globalRTLs(moduleList, moduleList.moduleList)
@@ -60,16 +60,21 @@ class PostSynthesize():
         for qsf in map(model.modify_path_hw,moduleList.getAllDependenciesWithPaths('GIVEN_QSFS')):
             newPrjFile.write('source ' + model.rel_if_not_abspath(qsf, moduleList.compileDirectory)+ '\n')
 
+        fullCompilePath = os.path.abspath(moduleList.compileDirectory)
+
+        newPrjFile.write('execute_module  -tool map -args "--verilog_macro=\\"QUARTUS_COMPILATION=1\\" --lib_path ' + fullCompilePath + ' " \n')
+        newPrjFile.write('execute_module  -tool fit \n')
+        newPrjFile.write('execute_module  -tool sta \n')
+        newPrjFile.write('execute_module  -tool sta -args "--do_report_timing"\n')
+        newPrjFile.write('execute_module  -tool asm  \n')
+
+        newPrjFile.write('project_close \n')
         newPrjFile.close()
 
-
-        # generate sof
         altera_sof = moduleList.env.Command(altera_apm_name + '.sof',
-                                            globalVerilogs + globalVHDs + [altera_apm_name + '.qsf'] + [paramTclFile] + sdcs,
-                                            ['cd ' + moduleList.compileDirectory + '; quartus_map --verilog_macro="QUARTUS_COMPILATION=1" --lib_path=`pwd` ' + moduleList.apmName,
-                                             'cd ' + moduleList.compileDirectory + '; quartus_fit ' + moduleList.apmName,
-                                             'cd ' + moduleList.compileDirectory + '; quartus_sta ' + moduleList.apmName + ' --report_script=' + timingReportScript,
-                                             'cd ' + moduleList.compileDirectory + '; quartus_asm ' + moduleList.apmName])
+                                            globalVerilogs + globalVHDs + [altera_apm_name + '.tcl'] + [paramTclFile] + sdcs,
+                                            ['cd ' + moduleList.compileDirectory + '; quartus_sh -t ' + moduleList.apmName + '.tcl' ])
+
 
         moduleList.topModule.moduleDependency['BIT'] = [altera_sof]
 
