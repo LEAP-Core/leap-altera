@@ -143,10 +143,10 @@ Packagehint=leap-platforms
 
 [Generic Altera JTAG/Requires]
 clocks_device=Single-Ended Crystal Clocks Device
-altera_jtag_physical_mapping=DE3 Dev Board JTAG Mapping
 physical_platform_utils=Common Physical Platform Utilities
 led_device=General LED Device
 jtag_device=Altera JTAG
+physical_platform_config=DE3 Dev Board JTAG Mapping
 
 [Standard Virtual Devices Submodel]
 File=config/pm/leap/submodels/virtual-devices/std-virtual-devices.apm
@@ -157,4 +157,19 @@ avalon=Avalon Bus Intefaces
 
 [Avalon Bus Intefaces]
 File=modules/leap-platforms-altera/bluespec/Avalon/src/avalon.awb
-Packagehint=leap-altera
+Packagehint=leap-platforms-altera
+
+[RRR Debug Module]
+File=modules/leap/virtual-platform/rrr/rrr-common/rrr-debug.awb
+Packagehint=leap
+
+[RRR Common Module/Requires]
+rrr_debug=RRR Debug Module
+
+[NULL Local Memory Interface/Requires]
+local_mem_interface=Local Memory Interface
+
+[Local Memory Interface]
+File=modules/leap/virtual-platform/low-level-platform-interface/local-mem/local-mem-interface/local-mem-interface.awb
+Packagehint=leap
+
