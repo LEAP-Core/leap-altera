@@ -81,7 +81,9 @@ class PostSynthesize():
         # generate the download program
         newDownloadFile = open('config/' + moduleList.apmName + '.download.temp', 'w')
         newDownloadFile.write('#!/bin/sh\n')
-        newDownloadFile.write('nios2-configure-sof ' + altera_apm_name + '.sof\n')
+        
+        fpgaPosition = moduleList.getAWBParam('physical_platform_config', 'FPGA_POSITION')
+        newDownloadFile.write('nios2-configure-sof --device ' + str(fpgaPosition) + ' ' +  altera_apm_name + '.sof\n')
         newDownloadFile.close()
 
         altera_download = moduleList.env.Command(
