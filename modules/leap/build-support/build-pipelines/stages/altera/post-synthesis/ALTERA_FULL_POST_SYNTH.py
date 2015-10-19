@@ -43,6 +43,9 @@ class PostSynthesize():
         for v in globalVHDs:
             newPrjFile.write('set_global_assignment -name VHDL_FILE ' + model.rel_if_not_abspath(v, moduleList.compileDirectory) + '\n'); 
 
+        for sysVerilogFile in moduleList.getAllDependenciesWithPaths('GIVEN_SYSTEM_VERILOGS')):
+            newPrjFile.write('set_global_assignment -name SYSTEMVERILOG_FILE ' + model.rel_if_not_abspath(memFile, moduleList.compileDirectory)+ '\n')
+
         # Altera flows appear to accept some kinds of memory intialization files. 
         # incorporate them here.
         for memFile in map(model.modify_path_hw,moduleList.getAllDependenciesWithPaths('GIVEN_MIFS') + moduleList.getAllDependenciesWithPaths('GIVEN_MIFS')):
