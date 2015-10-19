@@ -147,6 +147,7 @@ physical_platform_utils=Common Physical Platform Utilities
 led_device=General LED Device
 jtag_device=Altera JTAG
 physical_platform_config=DE3 Dev Board JTAG Mapping
+ddr_sdram_device=Null DDR SDRAM Physical Device
 
 [Standard Virtual Devices Submodel]
 File=config/pm/leap/submodels/virtual-devices/std-virtual-devices.apm
@@ -173,3 +174,13 @@ local_mem_interface=Local Memory Interface
 File=modules/leap/virtual-platform/low-level-platform-interface/local-mem/local-mem-interface/local-mem-interface.awb
 Packagehint=leap
 
+[Null DDR SDRAM Physical Device]
+File=modules/bluespec/common/fpgaenv/physical-platform/physical-devices/ddr-sdram/ddr-sdram-null/ddr-sdram-null.awb
+Packagehint=leap-platforms
+
+[Null DDR SDRAM Physical Device/Requires]
+ddr_sdram_definitions=DDR SDRAM Common Definitions
+
+[DDR SDRAM Common Definitions]
+File=modules/bluespec/common/fpgaenv/physical-platform/physical-devices/ddr-sdram/ddr-sdram.awb
+Packagehint=leap-platforms

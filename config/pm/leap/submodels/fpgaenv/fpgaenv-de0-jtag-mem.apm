@@ -2,10 +2,10 @@
 [Global]
 SaveParameters=0
 Description=Hybrid evaluation-de0-JTAG FPGA Environment
-File=fpgaenv-de0-jtag
+File=fpgaenv-de0-jtag-mem
 Version=2.2
 Type=Leap
-Name=Hybrid evaluation-de0-JTAG FPGA Environment
+Name=Hybrid evaluation-de0-JTAG FPGA Environment (with memory)
 Class=Asim::Model
 DefaultBenchmark=
 DefaultRunOpts=
@@ -31,7 +31,7 @@ Packagehint=leap
 virtual_devices=Standard Virtual Devices Submodel
 low_level_platform_interface=Low Level Platform Interface Hybrid
 umf=Little-Endian Unified Message Format
-platform_services=Standard Platform Service (No Memory Service)
+platform_services=Standard Platform Services Submodel
 
 [FPGA Environment]
 File=modules/leap/virtual-platform/fpga-environment.awb
@@ -78,7 +78,7 @@ remote_memory=Null Remote Memory
 channelio=Basic Virtual Channel Multiplexer
 rrr=RRR Clients and Servers
 physical_platform_debugger=Null Physical Platform Debugger
-local_mem=NULL Local Memory Interface
+local_mem=Local Memory Interface using BRAM
 
 [Null Remote Memory]
 File=modules/leap/virtual-platform/low-level-platform-interface/remote-memory/null/null-remote-memory.awb
@@ -90,10 +90,6 @@ Packagehint=leap
 
 [RRR Clients and Servers/Requires]
 rrr_common=RRR Common Module
-
-[NULL Local Memory Interface]
-File=modules/leap/virtual-platform/low-level-platform-interface/local-mem/local-mem-null.awb
-Packagehint=leap
 
 [Altera JTAG Physical Channel]
 File=modules/leap/virtual-platform/physical-channel/jtag/altera/jtag-physical-channel.awb
@@ -113,10 +109,6 @@ Packagehint=leap-platforms
 
 [Soft Services Submodel]
 File=config/pm/leap/submodels/common/soft-services.apm
-Packagehint=leap
-
-[Standard Platform Service (No Memory Service)]
-File=config/pm/leap/submodels/platform-services/standard-platform-null-mem.apm
 Packagehint=leap
 
 [Common Physical Platform Utilities/Requires]
@@ -163,9 +155,6 @@ Packagehint=leap
 [RRR Common Module/Requires]
 rrr_debug=RRR Debug Module
 
-[NULL Local Memory Interface/Requires]
-local_mem_interface=Local Memory Interface
-
 [Local Memory Interface]
 File=modules/leap/virtual-platform/low-level-platform-interface/local-mem/local-mem-interface/local-mem-interface.awb
 Packagehint=leap
@@ -173,6 +162,16 @@ Packagehint=leap
 [DE0 Dev Board JTAG Mapping]
 File=modules/bluespec/common/fpgaenv/physical-platform/altera_jtag/jtag/de0/altera-de0-jtag.awb
 Packagehint=leap-platforms
+
+[Local Memory Interface using BRAM/Requires]
+local_mem_interface=Local Memory Interface
+
+[Local Memory Interface using BRAM/Params]
+LOCAL_MEM_ADDR_BITS=8
+
+[Local Memory Interface using BRAM]
+File=modules/leap/virtual-platform/low-level-platform-interface/local-mem/local-mem-bram.awb
+Packagehint=leap
 
 [Null DDR SDRAM Physical Device]
 File=modules/bluespec/common/fpgaenv/physical-platform/physical-devices/ddr-sdram/ddr-sdram-null/ddr-sdram-null.awb
@@ -184,3 +183,7 @@ ddr_sdram_definitions=DDR SDRAM Common Definitions
 [DDR SDRAM Common Definitions]
 File=modules/bluespec/common/fpgaenv/physical-platform/physical-devices/ddr-sdram/ddr-sdram.awb
 Packagehint=leap-platforms
+
+[Standard Platform Services Submodel]
+File=config/pm/leap/submodels/platform-services/standard-platform-services.apm
+Packagehint=leap
