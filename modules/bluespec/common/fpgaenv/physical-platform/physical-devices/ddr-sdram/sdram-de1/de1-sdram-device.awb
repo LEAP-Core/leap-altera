@@ -1,0 +1,16 @@
+%name DE1 SDRAM 
+%desc DE1 SDRAM 
+
+%provides ddr_sdram_xilinx_driver
+
+%sources -t BSV -v PUBLIC de1-sdram-verilog-import.bsv
+
+%sources -t QSF -v PRIVATE sdram_de1.qsf
+
+%sources -t VERILOG -v PRIVATE de1_sdram.v
+
+%param DRAM_MIN_BURST     1   "Minimum burst size"
+%param DRAM_BEAT_WIDTH    16  "Bit width of one beat in a burst"
+%param DRAM_WORD_WIDTH    16  "Addressable object size"
+%param DRAM_ADDR_BITS     25  "Address bits per bank"
+%param DRAM_NUM_BANKS     1   "DDR banks"
